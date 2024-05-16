@@ -1,4 +1,4 @@
-package ir.aa.weatherprediction.user.domain;
+package ir.aa.weatherprediction.login.user.domain;
 
 
 import lombok.AllArgsConstructor;

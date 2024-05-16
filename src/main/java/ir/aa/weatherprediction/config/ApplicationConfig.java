@@ -1,7 +1,6 @@
 package ir.aa.weatherprediction.config;
 
-import ir.aa.weatherprediction.user.UserEntity;
-import ir.aa.weatherprediction.user.UserRepository;
+import ir.aa.weatherprediction.login.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

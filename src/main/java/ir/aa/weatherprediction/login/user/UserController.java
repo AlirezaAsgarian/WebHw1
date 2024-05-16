@@ -1,8 +1,8 @@
-package ir.aa.weatherprediction.user;
+package ir.aa.weatherprediction.login.user;
 
-import ir.aa.weatherprediction.user.domain.AuthResponse;
-import ir.aa.weatherprediction.user.domain.LoginRequest;
-import ir.aa.weatherprediction.user.domain.RegisterRequest;
+import ir.aa.weatherprediction.login.user.domain.AuthResponse;
+import ir.aa.weatherprediction.login.user.domain.LoginRequest;
+import ir.aa.weatherprediction.login.user.domain.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

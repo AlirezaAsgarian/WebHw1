@@ -1,12 +1,11 @@
-package ir.aa.weatherprediction.user.domain;
+package ir.aa.weatherprediction.login.user.domain;
 
-import ir.aa.weatherprediction.user.Role;
-import ir.aa.weatherprediction.user.UserEntity;
+import ir.aa.weatherprediction.login.user.Role;
+import ir.aa.weatherprediction.login.user.UserEntity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 

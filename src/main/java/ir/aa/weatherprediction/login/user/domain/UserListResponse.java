@@ -1,15 +1,16 @@
-package ir.aa.weatherprediction.user.domain;
+package ir.aa.weatherprediction.login.user.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequest {
-    private String username;
-    private String password;
+public class UserListResponse {
+    List<UserDao> users;
 }

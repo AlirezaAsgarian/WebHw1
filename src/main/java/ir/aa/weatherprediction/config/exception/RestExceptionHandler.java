@@ -1,4 +1,4 @@
-package ir.aa.weatherprediction.exception;
+package ir.aa.weatherprediction.config.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

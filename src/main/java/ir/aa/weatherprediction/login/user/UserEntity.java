@@ -1,4 +1,4 @@
-package ir.aa.weatherprediction.user;
+package ir.aa.weatherprediction.login.user;
 
 
 import jakarta.persistence.*;

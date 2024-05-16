@@ -1,6 +1,6 @@
-package ir.aa.weatherprediction.user;
+package ir.aa.weatherprediction.login.user;
 
-import ir.aa.weatherprediction.user.domain.UserListResponse;
+import ir.aa.weatherprediction.login.user.domain.UserListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

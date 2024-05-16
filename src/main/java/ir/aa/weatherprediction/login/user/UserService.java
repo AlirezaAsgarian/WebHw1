@@ -1,10 +1,10 @@
-package ir.aa.weatherprediction.user;
+package ir.aa.weatherprediction.login.user;
 
 import ir.aa.weatherprediction.config.JwtService;
-import ir.aa.weatherprediction.user.domain.AuthResponse;
-import ir.aa.weatherprediction.user.domain.LoginRequest;
-import ir.aa.weatherprediction.user.domain.RegisterRequest;
-import ir.aa.weatherprediction.user.domain.UserDao;
+import ir.aa.weatherprediction.login.user.domain.AuthResponse;
+import ir.aa.weatherprediction.login.user.domain.LoginRequest;
+import ir.aa.weatherprediction.login.user.domain.RegisterRequest;
+import ir.aa.weatherprediction.login.user.domain.UserDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

@@ -31,10 +31,6 @@ public class ApplicationConfig {
         return authenticationProvider;
     }
 
-    public static void main(String[] args) {
-        System.out.println(LocalDateTime.now());
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

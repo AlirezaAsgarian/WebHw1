@@ -1,0 +1,199 @@
+به نام خدا 
+Hw1 scenario :
+
+first register a user : 
+
+curl -X POST \
+  http://localhost:8080/users/register \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "firstName": "John",
+    "lastName": "Doe",
+    "username": "johndoe",
+    "password": "password123",
+    "phoneNumber": "1234567890",
+    "address": "123 Main St"
+}' -v
+
+
+response :  User with id 2 and username johndoe registered
+
+Register a user with duplicate username : 
+
+curl -X POST \
+  http://localhost:8080/users/register \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "firstName": "John",
+    "lastName": "Doe",
+    "username": "johndoe",
+    "password": "password123",
+    "phoneNumber": "1234567890",
+    "address": "123 Main St"
+}' -v
+
+response : {"type":"about:blank","title":"Bad Request","status":400,"detail":"duplicate username","instance":"/users/register"}
+
+check user inactivity when he want to login : 
+
+
+curl -X POST   http://localhost:8080/users/login   -H 'Content-Type: application/json'   -d '{
+    "username": "johndoe",
+    "password": "password123"
+  }' -v  
+
+response : {"type":"about:blank","title":"Forbidden","status":403,"detail":"user is inactive","instance":"/users/login"}
+
+
+login with admin user : 
+
+curl -X POST   http://localhost:8080/users/login   -H 'Content-Type: application/json'   -d '{
+     "username": "boy",
+     "password": "pass"
+   }' -v
+
+
+response : {"token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib3kiLCJpYXQiOjE3MTU4ODI4MDQsImV4cCI6MTcxNTg5MzYwNH0.CuMvJLme_svrh5_QjMDBdXet8JMgQCyiXbxJCv2rgA8"}
+
+
+
+active user johndoe by admin user : 
+
+curl -X PUT "http://localhost:8080/admin/users?username=johndoe&active=true" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib3kiLCJpYXQiOjE3MTU4ODI4MDQsImV4cCI6MTcxNTg5MzYwNH0.CuMvJLme_svrh5_QjMDBdXet8JMgQCyiXbxJCv2rgA8" -v
+
+
+
+response : user johndoe isActive status updated to activate
+
+check login active user with incorrect password : 
+
+
+curl -X POST   http://localhost:8080/users/login   -H 'Content-Type: application/json'   -d '{
+    "username": "johndoe",
+    "password": "psword123"
+  }' -v  
+
+response : {"type":"about:blank","title":"Bad Request","status":400,"detail":"wrong username or password","instance":"/users/login"}
+
+check login active user successfully : 
+
+curl -X POST   http://localhost:8080/users/login   -H 'Content-Type: application/json'   -d '{
+    "username": "johndoe",
+    "password": "password123"
+  }' -v  
+
+
+response : {"token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwiaWF0IjoxNzE1ODgzMDA0LCJleHAiOjE3MTU4OTM4MDR9.ILDeZX5XLbSb-njUKM0M1Wt1sUY74kH5DGkkOzG4P04"}
+
+check not have access of normal user to /admin path : 
+
+curl -X PUT "http://localhost:8080/admin/users?username=johndoe&active=true" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwiaWF0IjoxNzE1ODgzMDA0LCJleHAiOjE3MTU4OTM4MDR9.ILDeZX5XLbSb-njUKM0M1Wt1sUY74kH5DGkkOzG4P04" -v
+
+response : 403
+
+check create api token for this user : 
+
+curl -X POST   http://localhost:8080/user/api-tokens   -H 'Content-Type: application/json'   -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwiaWF0IjoxNzE1ODgzMDA0LCJleHAiOjE3MTU4OTM4MDR9.ILDeZX5XLbSb-njUKM0M1Wt1sUY74kH5DGkkOzG4P04'   -d '{
+    "name": "example_token",
+    "expireDate": "2025-12-31T23:59:59"
+}' -v
+
+response : {"name":"example_token","expireDate":"2025-12-31T23:59:59","token":"3e369115-24b0-438b-9b2d-6e1e6b845577"}
+
+check create another token but with authentication with api token : 
+
+curl -X POST   http://localhost:8080/user/api-tokens   -H 'Content-Type: application/json'   -H 'Authorization: ApiToken 3e369115-24b0-438b-9b2d-6e1e6b845577'   -d '{
+    "name": "example_token2",
+    "expireDate": "2025-12-31T23:59:59"
+}' -v
+
+response : {"name":"example_token2","expireDate":"2025-12-31T23:59:59","token":"dc297e63-18d7-488b-ad08-4a4fc94ab176"}
+
+
+create another token with name duplication : 
+
+curl -X POST   http://localhost:8080/user/api-tokens   -H 'Content-Type: application/json'   -H 'Authorization: ApiToken dc297e63-18d7-488b-ad08-4a4fc94ab176'   -d '{
+    "name": "example_token2",
+    "expireDate": "2024-05-15T15:44:36"
+}' -v
+
+response : {"type":"about:blank","title":"Conflict","status":409,"detail":"Duplicate token name","instance":"/user/api-tokens"}
+
+
+create another token with expiration date checking : 
+
+curl -X POST   http://localhost:8080/user/api-tokens   -H 'Content-Type: application/json'   -H 'Authorization: ApiToken dc297e63-18d7-488b-ad08-4a4fc94ab176'   -d '{
+    "name": "example_token3",
+    "expireDate": "2024-05-15T15:44:36"
+}' -v
+
+response : {"name":"example_token3","expireDate":"2024-05-15T15:44:36","token":"92c45779-8448-4558-9729-535cb7c41794"}
+
+check create another token with expired token :
+
+curl -X POST   http://localhost:8080/user/api-tokens   -H 'Content-Type: application/json'   -H 'Authorization: ApiToken 8af45c49-9efb-42f5-aa80-8ee7d9cf047d'   -d '{
+    "name": "example_token3",
+    "expireDate": "2024-05-15T15:44:36"
+}' -v
+
+response : {"headers":{},"body":{"type":"about:blank","title":"Unauthorized","status":401,"detail":"Api token is expired","instance":null,"properties":null},"statusCode":"UNAUTHORIZED","statusCodeValue":401}
+
+
+check revoke of token : 
+
+curl -X DELETE   http://localhost:8080/user/api-tokens -H 'Authorization: ApiToken 3e369115-24b0-438b-9b2d-6e1e6b845577' -v
+
+response : {"deleted":true}
+
+
+check can not create token with revoked token : 
+
+curl -X POST   http://localhost:8080/user/api-tokens   -H 'Content-Type: application/json'   -H 'Authorization: ApiToken 3e369115-24b0-438b-9b2d-6e1e6b845577'   -d '{
+    "name": "example_token4",
+    "expireDate": "2025-12-31T23:59:59"
+}' -v
+
+
+response : {"headers":{},"body":{"type":"about:blank","title":"Unauthorized","status":401,"detail":"Api token is not active","instance":null,"properties":null},"statusCode":"UNAUTHORIZED","statusCodeValue":401}
+
+
+check getting user api tokens : 
+
+curl -X GET   http://localhost:8080/user/api-tokens   -H 'Content-Type: application/json'   -H 'Authorization: ApiToken dc297e63-18d7-488b-ad08-4a4fc94ab176' -v
+
+response : {"tokens":[{"name":"example_token2","expireDate":"2025-12-31T23:59:59","token":"API ***","active":true,"expired":false},{"name":"example_token3","expireDate":"2024-05-15T15:44:36","token":"API ***","active":true,"expired":true},{"name":"example_token","expireDate":"2025-12-31T23:59:59","token":"API ***","active":false,"expired":false}],"count":3}
+
+check gettting users by admin user : 
+
+curl -X GET "http://localhost:8080/admin/users" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib3kiLCJpYXQiOjE3MTU4ODI4MDQsImV4cCI6MTcxNTg5MzYwNH0.CuMvJLme_svrh5_QjMDBdXet8JMgQCyiXbxJCv2rgA8" -v
+
+response : {"users":[{"firstName":"John","lastName":"Doe","username":"johndoe","password":"$2a$10$r0gu0VdcywLAAdIgZVoh/uQm8k6UIRccyQiz.xSkBqGQ1oVqfSyfq","phoneNumber":"1234567890","address":"123 Main St","role":"USER","dateJoined":"2024-05-16T12:18:58.562+00:00","lastLogin":"2024-05-16T12:19:40.136+00:00","active":true},{"firstName":null,"lastName":null,"username":"boy","password":"$2a$10$oZiZRP09LZtI5F2FvVfrF.3p1TOgNaoC7fH2M/ktxofq2ohlIJnte","phoneNumber":null,"address":null,"role":"ADMIN","dateJoined":null,"lastLogin":"2024-05-16T12:39:43.087+00:00","active":true}]}
+
+
+
+check activate of user which is activate : 
+
+curl -X PUT "http://localhost:8080/admin/users?username=johndoe&active=true" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib3kiLCJpYXQiOjE3MTU4ODI4MDQsImV4cCI6MTcxNTg5MzYwNH0.CuMvJLme_svrh5_QjMDBdXet8JMgQCyiXbxJCv2rgA8" -v
+
+response : {"type":"about:blank","title":"Bad Request","status":400,"detail":"user already has been active","instance":"/admin/users"}
+
+
+check inactiavte of user : 
+
+curl -X PUT "http://localhost:8080/admin/users?username=johndoe&active=false" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib3kiLCJpYXQiOjE3MTU4ODI4MDQsImV4cCI6MTcxNTg5MzYwNH0.CuMvJLme_svrh5_QjMDBdXet8JMgQCyiXbxJCv2rgA8" -v
+
+response : user johndoe isActive status updated to inactive
+
+
+check can not in active user to login : 
+
+curl -X POST   http://localhost:8080/users/login   -H 'Content-Type: application/json'   -d '{
+    "username": "johndoe",
+    "password": "password123"
+  }' -v  
+
+
+response : {"type":"about:blank","title":"Forbidden","status":403,"detail":"user is inactive","instance":"/users/login"}
+
+
+

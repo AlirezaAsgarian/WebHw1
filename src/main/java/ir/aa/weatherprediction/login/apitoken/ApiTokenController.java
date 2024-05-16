@@ -1,5 +1,6 @@
 package ir.aa.weatherprediction.login.apitoken;
 
+import ir.aa.weatherprediction.config.TokenType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-import static ir.aa.weatherprediction.config.ApiTokenAuthenticationFilter.API_TOKEN_PREFIX_HEADER;
 
 
 @RestController
@@ -34,8 +34,8 @@ public class ApiTokenController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> invalidateApiToken(@RequestHeader("Authorization") String authorizationHeader) {
-        apiTokenService.inActiveToken(authorizationHeader.substring(API_TOKEN_PREFIX_HEADER.length()));
+    public ResponseEntity<Map<String, Boolean>> invalidateApiToken(@RequestHeader("Authorization") String authorizationHeader) {
+        apiTokenService.inActiveToken(authorizationHeader.substring(TokenType.API_TOKEN.getName().length() + 1));
         // Return a response indicating the token was successfully deleted
         return ResponseEntity.ok(Map.of("deleted", true));
     }

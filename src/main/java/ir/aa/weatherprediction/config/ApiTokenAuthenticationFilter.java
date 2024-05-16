@@ -23,7 +23,6 @@ import java.lang.module.ResolutionException;
 @Component
 public class ApiTokenAuthenticationFilter extends OncePerRequestFilter  {
 
-    public static final String API_TOKEN_PREFIX_HEADER = "ApiToken ";
     final ApiTokenService apiTokenService;
     final UserDetailsService userDetailsService;
 
@@ -40,11 +39,11 @@ public class ApiTokenAuthenticationFilter extends OncePerRequestFilter  {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith(API_TOKEN_PREFIX_HEADER)) {
+        if (authHeader == null || !authHeader.startsWith(TokenType.API_TOKEN.getName() + " ")) {
             filterChain.doFilter(request, response);
             return;
         }
-        final String token = authHeader.substring(API_TOKEN_PREFIX_HEADER.length());
+        final String token = authHeader.substring(TokenType.API_TOKEN.getName().length() + 1);
         try {
             if (!apiTokenService.isValidApiToken(token)) {
                 filterChain.doFilter(request, response);

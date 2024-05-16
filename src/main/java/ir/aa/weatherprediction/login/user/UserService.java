@@ -20,6 +20,9 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class UserService {
+    public static final String DUPLICATE_USERNAME_ERROR_MSG = "duplicate username";
+    public static final String WRONG_USERNAME_OR_PASSWORD_ERROR_MSG = "wrong username or password";
+    public static final String USER_IS_INACTIVE_ERROR_MSG = "user is inactive";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -43,7 +46,7 @@ public class UserService {
 
     public String register(RegisterRequest request, Role role) throws ResponseStatusException {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "duplicate username");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, DUPLICATE_USERNAME_ERROR_MSG);
         }
         UserEntity user = UserEntity.builder()
                 .firstName(request.getFirstName())
@@ -67,17 +70,17 @@ public class UserService {
         String password = request.getPassword();
         Optional<UserEntity> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "wrong username or password");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, WRONG_USERNAME_OR_PASSWORD_ERROR_MSG);
         }
 
         UserEntity user = optionalUser.get();
 
         if (!optionalUser.get().isActive()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user is inactive");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, USER_IS_INACTIVE_ERROR_MSG);
         }
 
         if (!passwordEncoder.matches(password, optionalUser.get().getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "wrong username or password");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, WRONG_USERNAME_OR_PASSWORD_ERROR_MSG);
         }
 
         user.setLastLogin(new Date());

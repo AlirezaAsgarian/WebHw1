@@ -84,7 +84,7 @@ public class ApiTokenService {
             Optional<ApiTokenEntity> apiTokenEntity = apiTokenRepository.findByToken(apiToken);
             if (apiTokenEntity.isPresent()){
                 if (!apiTokenEntity.get().isActive()) {
-                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Api token not found");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Api token is not active");
                 }
                 if (isExpired(apiTokenEntity.get().getExpireDate())) {
                     throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Api token is expired");

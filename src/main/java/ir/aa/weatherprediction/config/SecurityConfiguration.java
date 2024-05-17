@@ -38,8 +38,8 @@ public class SecurityConfiguration {
     private static void getAuthenticated(
             AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry
     ) {
-        registry.requestMatchers("/users/register",
-                        "/users/login")
+        registry.requestMatchers(
+                "/users/register", "/users/login", "/countries/**")
                 .permitAll()
                 .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
                 .anyRequest()

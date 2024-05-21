@@ -32,7 +32,10 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (ResponseStatusException e) {
             response.setStatus(e.getStatusCode().value());
-            response.getWriter().write(convertObjectToJson(restExceptionHandler.handleAccessDeniedException(e)));
+            response.getWriter().write(convertObjectToJson(restExceptionHandler.handleResponseStatusException(e)));
+        } catch (Exception e) {
+            response.setStatus(500);
+            response.getWriter().write(convertObjectToJson(restExceptionHandler.handleOtherException(e)));
         }
     }
 

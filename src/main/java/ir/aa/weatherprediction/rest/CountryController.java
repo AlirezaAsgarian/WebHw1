@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +25,7 @@ public class CountryController {
 
     private static final RestClient restClient = RestClient.create();
 
+    @Cacheable("countries")
     @GetMapping("/countries")
     ObjectNode getCountriesList() {
         JsonNode jsonResponse = restClient.get()
@@ -37,6 +42,7 @@ public class CountryController {
         return resultObjectNode;
     }
 
+    @Cacheable("country")
     @GetMapping("/countries/{name}")
     ObjectNode getCountryInfo(@PathVariable("name") String countryName) {
         JsonNode jsonResponse = restClient.get()
@@ -50,6 +56,7 @@ public class CountryController {
         return resultObjectNode;
     }
 
+    @Cacheable("weather")
     @GetMapping("/countries/{name}/weather")
     ObjectNode getCapitalWeatherInfo(@PathVariable("name") String countryName) {
         JsonNode jsonResponseOfCountry = restClient.get()
@@ -67,6 +74,16 @@ public class CountryController {
         List.of("wind_speed", "wind_degrees", "temp", "humidity")
                 .forEach(x -> resultObjectNode.put(x, jsonResponseOfWeather.get(x)));
         return resultObjectNode;
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "countries", allEntries = true),
+            @CacheEvict(value = "country", allEntries = true),
+            @CacheEvict(value = "weather", allEntries = true)
+    })
+    @Scheduled(fixedRateString = "${caching.spring.ttl}")
+    public void clearAllCaches() {
+        System.out.println("Cache cleared");
     }
 
 }

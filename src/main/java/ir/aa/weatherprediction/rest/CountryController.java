@@ -20,25 +20,25 @@ public class CountryController {
 
     @Cacheable("countries")
     @GetMapping("/countries/all")
-    ObjectNode getAllCountries() {
+    public ObjectNode getAllCountries() {
         return service.getAllCountries();
     }
 
     @GetMapping("/countries")
-    ObjectNode getCountriesPage(@Param("page") Integer page, HttpServletRequest request) {
+    public ObjectNode getCountriesPage(@Param("page") Integer page, HttpServletRequest request) {
         String serverSelfUri = "http://%s:%s".formatted(request.getServerName(), request.getServerPort());
         return service.getCountriesPage(page, serverSelfUri);
     }
 
     @Cacheable("country")
     @GetMapping("/countries/{name}")
-    ObjectNode getCountryInfo(@PathVariable("name") String countryName) {
+    public ObjectNode getCountryInfo(@PathVariable("name") String countryName) {
         return service.getCountryInfo(countryName);
     }
 
     @Cacheable("weather")
     @GetMapping("/countries/{name}/weather")
-    ObjectNode getCapitalWeatherInfo(@PathVariable("name") String countryName, HttpServletRequest request) {
+    public ObjectNode getCapitalWeatherInfo(@PathVariable("name") String countryName, HttpServletRequest request) {
         String serverSelfUri = "http://%s:%s".formatted(request.getServerName(), request.getServerPort());
         return service.getCapitalWeatherInfo(countryName, serverSelfUri);
     }

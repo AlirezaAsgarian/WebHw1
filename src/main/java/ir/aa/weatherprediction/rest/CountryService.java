@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import ir.aa.weatherprediction.rest.domain.WeatherRequest;
+import ir.aa.weatherprediction.rest.domain.WeatherResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -12,19 +16,29 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 @Service
 public class CountryService {
 
     private static final int pageSize = 10;
-
     private static final String countriesApiUri = "https://countriesnow.space/api/v0.1/countries";
     private static final String apiNinjasUri = "https://api.api-ninjas.com/v1";
-
     private static final String ninjasApiKey = "0yvb2E7SNK40wA0iseRj6Q==D0qe6dl6L9zszLh3";
-
     private static final RestClient restClient = RestClient.create();
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final BlockingQueue<WeatherRequest> weatherRequests;
+    private final BlockingQueue<WeatherResponse> weatherResponses;
+
+    @Autowired
+    public CountryService(@Qualifier("getWeatherRequestQueue") ArrayBlockingQueue<WeatherRequest> weatherRequests,
+                          @Qualifier("getWeatherResponseQueue") ArrayBlockingQueue<WeatherResponse> weatherResponses) {
+      this.weatherRequests = weatherRequests;
+      this.weatherResponses = weatherResponses;
+    }
 
     public ObjectNode getAllCountries() {
         List<String> countriesList = fetchAllCountriesList();
@@ -64,10 +78,31 @@ public class CountryService {
     }
 
     public ObjectNode getCountryInfo(String countryName) {
-        JsonNode jsonResponse = restClient.get()
-                .uri("%s/country?name=%s".formatted(apiNinjasUri, countryName))
-                .header("X-Api-Key", ninjasApiKey)
-                .retrieve().body(JsonNode.class);
+        String id = UUID.randomUUID().toString();
+        WeatherRequest weatherRequest = new WeatherRequest(id, countryName);
+        try {
+            weatherRequests.put(weatherRequest);
+        } catch (InterruptedException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected interrupt");
+        }
+        Optional<WeatherResponse> weatherResponseOptional;
+        while (true) {
+            weatherResponseOptional = weatherResponses.stream().findFirst();
+            if (weatherResponseOptional.isPresent() && weatherResponseOptional.get().getId().equals(id)) {
+                break;
+            }
+            try {
+                Thread.sleep(2_000);
+            } catch (InterruptedException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected interrupt");
+            }
+    }
+        WeatherResponse weatherResponse = weatherResponseOptional.get();
+        boolean isRemoved = weatherResponses.remove(weatherResponse);
+        if (!isRemoved) {
+            throw new AssertionError("weatherResponse does not remove from queue");
+        }
+        JsonNode jsonResponse = weatherResponse.getJsonNode();
         if (jsonResponse.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such country name");
         }

@@ -39,7 +39,7 @@ public class SecurityConfiguration {
             AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry
     ) {
         registry.requestMatchers(
-                "/users/register", "/users/login", "/countries/**")
+                "/users/register", "/users/login")
                 .permitAll()
                 .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
                 .anyRequest()

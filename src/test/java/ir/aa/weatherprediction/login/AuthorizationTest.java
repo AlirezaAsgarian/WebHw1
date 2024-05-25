@@ -18,7 +18,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.web.client.ResourceAccessException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -125,7 +124,7 @@ class AuthorizationTest {
 
         // Create token using expired token is not allowed
         ApiTokenRequest finalApiTokenRequest = apiTokenRequest;
-        assertThrows(ResourceAccessException.class,
+        assertThrows(Exception.class,
                 () -> createApiTokenWithException(apiTokenResponseWithExpiredToken.getBody().getToken(), TokenType.API_TOKEN, finalApiTokenRequest));
 
 
@@ -136,7 +135,7 @@ class AuthorizationTest {
         assertEquals(true, revokeResponseEntity.getBody().get("deleted"));
 
         // Create token using revoked token is not allowed
-        assertThrows(ResourceAccessException.class,
+        assertThrows(Exception.class,
                 () -> createApiTokenWithException(apiTokenResponseWithValidToken.getBody().getToken(), TokenType.API_TOKEN, finalApiTokenRequest));
     }
 

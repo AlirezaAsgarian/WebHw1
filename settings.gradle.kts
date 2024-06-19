@@ -5,3 +5,6 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+include(":PredicationApp")
+include(":Authentication")
+include("rest-dto-common")

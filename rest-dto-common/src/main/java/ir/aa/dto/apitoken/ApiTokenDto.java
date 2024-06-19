@@ -1,0 +1,19 @@
+package ir.aa.dto.apitoken;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class ApiTokenDto {
+    private String name;
+    private String expireDate;
+    private boolean isExpired;
+    private boolean isActive;
+    private String token;
+}
+

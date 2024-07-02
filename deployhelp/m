@@ -1,0 +1,42 @@
+به نام خدا
+بحث حول مبحث Remote jvm debug :
+میخواهیم pagination ماژول backend را دیباگ کنیم از روی لب !!!
+برای این کار از ابزاری به نام remote jvm debug استفاده کنیم
+این اینجوری کار میکنه که یه java agent میاره کنارش بالا اگر در خواست اومد و یکی به پورت مشخص شده وصل بود به جای اینکه بره سمت اپ اصلی بره سمت اون debugger عه
+حال اون دیباگره میتونه intellij خودمون باشه
+توی intellij اونجا که مشخص میکنی ران هات رو یه اپشن داره که میگه Remote JVM Debug :
+اونجا میگی به کجا listen کنه intellij :‌
+وقتی اینو بگی خود intellij بهت میگه به برنامه جاوایی ات چه فلگ هایی رو باید اضافه کنی
+مثلا الان میخوام به rineh2 و پورت 5006 اون وصل بشم
+-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
+اینو بهمون میده
+حالا باید بریم entry point اون رو عوض کنیم
+قبلش میبینیم که عه اینجا وقتی kubectl describe po میزنیم بهمون میگه که کجا بالاس ‌:
+Node:         rineh5/172.32.16.15
+
+ spec:
+      containers:
+      - command:
+        - java
+        - -Xshare:auto
+        - -Dlogging.config=/etc/config/log4j2.xml
+        - -cp
+        - '@/app/jib-classpath-file'
+        - -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
+        - ir.cra.damavand.backend.ApplicationLauncher
+        - --spring.config.additional-location=/etc/config/
+        env:
+        - name: JAVA_TOOL_OPTIONS
+          value: -verbose:gc -XX:+UseG1GC -XX:ActiveProcessorCount=40 -Xmx3g -Xms3g
+        image: cra/damavand/backend:376
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+
+اینگونه override شدن
+حالا باید یه kubeproxy انجام بدیم از داخل rineh5 همون پورت 5006 به 5006
+اگر ادرس نزنیم برای kubectl port-forward روی localhost پورت رو accessible میکنه
+باید مثلا اگر روی رینه ۲ میزنیم آدرسش هم بزنیم :‌
+kubectl port-forward --address 172.32.16.12 backend-66b558f856-dhb72 5006:5006
+
+بعد میتونیم متصل بشیم به لب
+باید دیباگ رو بزنیم و تمام

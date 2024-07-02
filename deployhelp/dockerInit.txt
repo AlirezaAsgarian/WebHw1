@@ -1,0 +1,39 @@
+
+Start enviornment of weather prediction app 
+First we should create a network for communication dockers with each other : 
+
+docker network create web-network
+
+Second we should create docker container for postgres 
+
+docker run -d  --name my-postgres-web  --network web-network  -e POSTGRES_PASSWORD=mysecretpassword   postgres:latest
+
+Third we should create databases for my-postgres-web
+
+docker exec -it my-postgres-web  /bin/bash
+psql -U postgres
+CREATE DATABASE users;
+CREATE DATABASE app;
+quit
+exit 
+
+Fourth you should create docker images of Weather app and Authentication app 
+go to root of project and write this command 
+
+./gradlew -DsocksProxyPort=1118 -DsocksProxyHost=localhost :authentication:jibdockerbuild :PredicationApp:jibdockerbuild
+
+Fifth you should start containers of authentication app and predication app. 
+Go to deployhelp for start authentication start 
+
+docker run --name authentication-container -v "$(pwd)/authentication:/etc/config" --network web-network authentication:1
+
+docker run --name prediction1 -v "$(pwd)/app:/etc/config" --network web-network predicationapp:1
+docker run --name prediction2 -v "$(pwd)/app:/etc/config" --network web-network predicationapp:1
+docker run --name prediction3 -v "$(pwd)/app:/etc/config" --network web-network predicationapp:1
+
+Sixth now we should run nginx to load balancing
+
+docker run -d   --name nginx-container   -p 80:80   -v $(pwd)/nginx/prediction.conf:/etc/nginx/conf.d/default.conf -v $(pwd)/nginx/nginx.conf:/etc/nginx/nginx.conf  --network web-network   nginx:latest
+
+Finished
+

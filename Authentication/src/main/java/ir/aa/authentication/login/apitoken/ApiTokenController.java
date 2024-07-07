@@ -65,7 +65,7 @@ public class ApiTokenController {
         return ResponseEntity.ok(Map.of("deleted", true));
     }
 
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<Map<String, Boolean>> invalidateApiTokenByName(@RequestBody ApiTokenRequest request) {
         System.out.println("INV: " + request);
         apiTokenService.inActiveTokenByName(request.getName());

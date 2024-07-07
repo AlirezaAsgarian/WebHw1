@@ -58,10 +58,10 @@ public class ApiTokenController {
                 });
     }
 
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<Map<String, Boolean>> invalidateApiTokenByName(@RequestBody ApiTokenRequest request) {
         System.out.println(request);
-        return restTemplate.exchange(API_TOKENS_BASE_URL, HttpMethod.PATCH, new HttpEntity<>(request, new HttpHeaders()),
+        return restTemplate.exchange(API_TOKENS_BASE_URL, HttpMethod.PUT, new HttpEntity<>(request, new HttpHeaders()),
                 new ParameterizedTypeReference<Map<String, Boolean>>() {
                 });
     }

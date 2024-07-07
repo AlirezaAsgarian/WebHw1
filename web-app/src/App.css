@@ -1,0 +1,51 @@
+body {
+    text-align: center;
+    height: 100%;
+}
+
+label, input {
+    font-size: 20px;
+    padding: 10px;
+    margin: 30px;
+}
+
+label {
+    color: white;
+}
+
+.but {
+    color: black;
+    background-color: ;
+}
+
+form {
+    border-radius: 30px;
+    background-color: #0066ff;
+    margin-top: 100px;
+    display: inline-block;
+}
+
+table {
+    background-color: #3385ff;
+    margin-top: 100px;
+    display: inline-block;
+}
+
+th {
+    padding: 20px;
+    color: white;
+}
+
+td {
+    padding: 10px;
+    background-color: white;
+}
+
+.che {
+    width: 10px;
+    background-color: white;
+}
+
+del {
+    background-color: gray;
+}

@@ -75,7 +75,7 @@ function UserEntry({user}) {
     <tr>
       <td>{user.username}</td>
       <td>{user.dateJoined}</td>
-      <td>
+      <td class="che">
           <input type="checkbox" onChange={onActiveChange} checked={isActive} />
       </td>
     </tr>

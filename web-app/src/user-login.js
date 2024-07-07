@@ -41,8 +41,9 @@ export default function UserLogin() {
   }
 
   return (
-    <div>
+    <div class="container">
       <form onSubmit={sendLogin}>
+        <h1>User Login</h1>
         <label>username: 
           <input
             type="text"
@@ -50,6 +51,7 @@ export default function UserLogin() {
             onChange={(e) => setUsername(e.target.value)}
           />
         </label>
+        <br/>
         <label>password: 
           <input
             type="text"
@@ -57,7 +59,8 @@ export default function UserLogin() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-        <input type="submit"/>
+        <br/>
+        <input class="but" type="submit" value="Login"/>
       </form>
     </div>
   );

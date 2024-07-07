@@ -43,6 +43,7 @@ export default function AdminLogin() {
   return (
     <div>
       <form onSubmit={sendLogin}>
+        <h1>Admin Login</h1>
         <label>username: 
           <input
             type="text"
@@ -50,6 +51,7 @@ export default function AdminLogin() {
             onChange={(e) => setUsername(e.target.value)}
           />
         </label>
+        <br/>
         <label>password: 
           <input
             type="text"
@@ -57,7 +59,8 @@ export default function AdminLogin() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-        <input type="submit"/>
+        <br/>
+        <input type="submit" value="Login"/>
       </form>
     </div>
   );

@@ -75,6 +75,7 @@ export default function Panel() {
         {apiTokens.map((token) => <TokenEntry token={token} />)}
       </table>
       <form onSubmit={addToken}>
+        <h1>Add API Token</h1>
         <label>name: 
           <input
             type="text"

@@ -5,6 +5,7 @@ import AdminPanel from "./admin-panel.js"
 import UserLogin from "./user-login.js"
 import UserRegister from "./user-register.js"
 import UserPanel from "./user-panel.js"
+import './App.css';
 
 export default function App() {
   return (

@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/admin/users")
 public class AdminUserController {
 

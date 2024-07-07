@@ -18,6 +18,7 @@ import java.util.Map;
 
 
 @RestController
+@CrossOrigin
 @RequestMapping("/user/api-tokens")
 public class ApiTokenController {
 
@@ -60,6 +61,14 @@ public class ApiTokenController {
     @DeleteMapping
     public ResponseEntity<Map<String, Boolean>> invalidateApiToken(@RequestHeader("Authorization") String authorizationHeader) {
         apiTokenService.inActiveToken(authorizationHeader.substring(TokenType.API_TOKEN.getName().length() + 1));
+        // Return a response indicating the token was successfully deleted
+        return ResponseEntity.ok(Map.of("deleted", true));
+    }
+
+    @PatchMapping
+    public ResponseEntity<Map<String, Boolean>> invalidateApiTokenByName(@RequestBody ApiTokenRequest request) {
+        System.out.println("INV: " + request);
+        apiTokenService.inActiveTokenByName(request.getName());
         // Return a response indicating the token was successfully deleted
         return ResponseEntity.ok(Map.of("deleted", true));
     }

@@ -114,6 +114,22 @@ public class ApiTokenService {
         return true;
     }
 
+    public boolean inActiveTokenByName(String tokenName) {
+
+        // Find the API token entity in the repository
+        Optional<ApiTokenEntity> apiTokenEntity = apiTokenRepository.findByName(tokenName);
+
+        if (apiTokenEntity.isEmpty() || !apiTokenEntity.get().isActive()) {
+            // Token not found
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token not found or already invalidated");
+        }
+
+        // Invalidate the token
+        apiTokenEntity.get().setActive(false);
+        apiTokenRepository.save(apiTokenEntity.get()); // Save changes to the database
+        return true;
+    }
+
     private boolean isValidDate(String expireDate) {
         try {
             LocalDateTime.parse(expireDate);

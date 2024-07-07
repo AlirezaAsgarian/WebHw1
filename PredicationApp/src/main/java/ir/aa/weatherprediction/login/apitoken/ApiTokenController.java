@@ -18,6 +18,7 @@ import java.util.Map;
 
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/user/api-tokens")
 public class ApiTokenController {
 
@@ -56,5 +57,12 @@ public class ApiTokenController {
                 new ParameterizedTypeReference<Map<String, Boolean>>() {
                 });
     }
-}
 
+    @PatchMapping
+    public ResponseEntity<Map<String, Boolean>> invalidateApiTokenByName(@RequestBody ApiTokenRequest request) {
+        System.out.println(request);
+        return restTemplate.exchange(API_TOKENS_BASE_URL, HttpMethod.PATCH, new HttpEntity<>(request, new HttpHeaders()),
+                new ParameterizedTypeReference<Map<String, Boolean>>() {
+                });
+    }
+}

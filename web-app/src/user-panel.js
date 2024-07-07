@@ -90,7 +90,7 @@ export default function Panel() {
             onChange={(e) => setTokenExpire(e.target.value)}
           />
         </label>
-        <input type="submit"/>
+        <input type="submit" value="Add"/>
       </form>
     </>
   );

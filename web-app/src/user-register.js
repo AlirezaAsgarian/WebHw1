@@ -45,6 +45,7 @@ export default function UserLogin() {
   return (
     <div>
       <form onSubmit={sendLogin}>
+        <h1>User Register</h1>
         <label>first name: 
           <input
             type="text"
@@ -59,6 +60,7 @@ export default function UserLogin() {
             onChange={(e) => setLastName(e.target.value)}
           />
         </label>
+        <br/>
         <label>username: 
           <input
             type="text"
@@ -73,6 +75,8 @@ export default function UserLogin() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
+        <br/>
+
         <label>phone number: 
           <input
             type="text"
@@ -87,7 +91,8 @@ export default function UserLogin() {
             onChange={(e) => setAddress(e.target.value)}
           />
         </label>
-        <input type="submit"/>
+        <br/>
+        <input type="submit" value="Register"/>
       </form>
     </div>
   );
